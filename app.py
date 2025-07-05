@@ -1,7 +1,7 @@
 from google import genai
 from google.genai import types
 import os
-from flask import Flask, request, abort
+from flask import Flask, request, abort, send_file
 
 app = Flask(__name__)
 
@@ -51,4 +51,4 @@ def trigger():
 
 @app.route("/Custom.json")
 def send():
-    return Flask.send_file("Custom.json", as_attachment=True)
+    return send_file("Custom.json", as_attachment=True)
