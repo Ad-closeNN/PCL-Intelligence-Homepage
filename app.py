@@ -79,4 +79,4 @@ def send():
 @app.route("/")
 def main():
     os.system("cd HomepageBuilder-0.14.5 && pip install .")
-    return render_template('index.html')
+    return render_template('index.html') 
