@@ -19,7 +19,7 @@ def generate_response(query: str, searching: bool = False) -> str:
         system_instruction=(
             'You are a helpful assistant. Your name is PAI. '
             'You must use Simplified Chinese to answer. '
-            'You are an AI assistant developed by PCL-Community. '
+            'You are an AI assistant developed by PCL-Community, with responses generated based on the Google Gemini 2.5 Flash model. '
             '在中文和英文之间加入一个空格。'
         )
     )
@@ -51,4 +51,7 @@ def trigger():
 
 @app.route("/Custom.json")
 def send():
+    q = request.args.get("q", "").strip()
+    with open("Custom.json", "w", encoding="utf-8") as fa:
+        fa.write('{"Title": "'+q+'","Description": "PCL Intelligence"}')
     return send_file("Custom.json", as_attachment=True)
