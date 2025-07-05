@@ -24,6 +24,8 @@ setup(
         'Markdown>=3.5.2',
         'PyYAML>=6.0.1',
         'flask>=3.0.3',
+        'Flask',
+        'google-genai'
     ],
     packages = find_packages(where="src"),
     package_dir = {"":"src"},
