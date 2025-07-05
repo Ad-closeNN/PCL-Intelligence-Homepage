@@ -38,7 +38,7 @@ def generate_response(query: str, searching: bool = False) -> str:
     
     os.system(f"mkdir /tmp/HB")
     with open(f"/tmp/HB/response.md", "w", encoding="utf-8") as f:
-        f.write(safe_text)
+        f.write(str(safe_text))
     content = """name: external
     fill:
     templates:
