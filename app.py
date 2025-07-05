@@ -1,7 +1,7 @@
 from google import genai
 from google.genai import types
 import os
-from flask import Flask, request, abort, send_file
+from flask import Flask, request, abort, send_file, render_template
 
 app = Flask(__name__)
 
@@ -55,3 +55,7 @@ def send():
     with open("/tmp/Custom.json", "w", encoding="utf-8") as fa:
         fa.write('{"Title": "'+q+'","Description": "PCL Intelligence"}')
     return send_file("/tmp/Custom.json", as_attachment=True)
+
+@app.route("/")
+def main():
+    return render_template('index.html')
