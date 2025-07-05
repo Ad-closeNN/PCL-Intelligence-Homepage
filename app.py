@@ -51,4 +51,4 @@ def trigger():
 
 @app.route("/Custom.json")
 def send():
-    return flask.send_file("Custom.json", as_attachment=True)
+    return Flask.send_file("Custom.json", as_attachment=True)
