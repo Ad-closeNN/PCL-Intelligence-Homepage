@@ -47,7 +47,12 @@ def generate_response(query: str, searching: bool = False) -> str:
     """
     with open(f"/tmp/HB/__LIBRARY__.yml", "w", encoding="utf-8") as f:
         f.write(content)
-    os.system('builder build --output-path "/tmp/HB/Custom.xaml"')
+    try:
+        os.system('builder build --output-path "/tmp/HB/Custom.xaml"')
+    except:
+        os.system("cd HomepageBuilder-0.14.5")
+        os.system("pip install .")
+    os.system("cd HomepageBuilder-0.14.5/PCL-Intelligence")
     with open("/tmp/HB/Custom.xaml", "r", encoding="utf-8") as re:
         xaml = re.read()
     return xaml
