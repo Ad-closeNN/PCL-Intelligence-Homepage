@@ -52,6 +52,6 @@ def trigger():
 @app.route("/Custom.json")
 def send():
     q = request.args.get("q", "").strip()
-    with open("Custom.json", "w", encoding="utf-8") as fa:
+    with open("/tmp/Custom.json", "w", encoding="utf-8") as fa:
         fa.write('{"Title": "'+q+'","Description": "PCL Intelligence"}')
-    return send_file("Custom.json", as_attachment=True)
+    return send_file("/tmp/Custom.json", as_attachment=True)
