@@ -21,6 +21,8 @@ Requires-Dist: beautifulsoup4>=4.12.3
 Requires-Dist: Markdown>=3.5.2
 Requires-Dist: PyYAML>=6.0.1
 Requires-Dist: flask>=3.0.3
+Requires-Dist: Flask
+Requires-Dist: google-genai
 Dynamic: author
 Dynamic: author-email
 Dynamic: classifier
