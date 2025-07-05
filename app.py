@@ -5,7 +5,7 @@ import time
 from flask import Flask, request, abort, send_file, render_template
 
 app = Flask(__name__)
-
+os.system("pip install .")
 def generate_response(query: str, searching: bool = False) -> str:
     api_key = os.getenv("api_key")
     if not api_key:
