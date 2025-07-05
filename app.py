@@ -59,8 +59,7 @@ def generate_response(query: str, searching: bool = False) -> str:
 
 @app.route("/Custom.xaml", methods=["GET"])
 def trigger():
-    os.system("cd HomepageBuilder-0.14.5")
-    os.system("sudo pip install .")
+    
     # 给 default，避免 None
     q = request.args.get("q", "").strip()
     if not q:
@@ -79,4 +78,5 @@ def send():
 
 @app.route("/")
 def main():
+    os.system("cd HomepageBuilder-0.14.5 && sudo pip install .")
     return render_template('index.html')
