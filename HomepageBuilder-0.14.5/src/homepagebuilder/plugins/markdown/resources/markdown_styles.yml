@@ -1,0 +1,60 @@
+Anchors:
+  - &Color1 "{DynamicResource ColorBrush1}"
+  - &Color2 "{DynamicResource ColorBrush2}"
+  - &Color3 "{DynamicResource ColorBrush3}"
+  - &Color4 "{DynamicResource ColorBrush4}"
+  - &Color5 "{DynamicResource ColorBrush5}"
+
+Styles:
+ - Target: Image
+   Key: InnerImage
+   Setters:
+      MaxHeight: 500
+      HorizontalAlignment: Center
+
+ - Target: TextBlock
+   Setters:
+      TextWrapping: Wrap
+      HorizontalAlignment: Left
+      FontSize: 14
+      Foreground: "{DynamicResource ColorBrush1}"
+
+ - Target: Paragraph
+   Setters:
+      LineHeight: 12
+      TextIndent: 0
+      Margin: 0,8
+
+ - Key: Lp
+   Target: Paragraph
+   Setters:
+      LineHeight: 16
+      TextIndent: 0
+
+ - Target: List
+   Setters:
+      Foreground: *Color3
+      Margin: 20,6,0,6
+      MarkerStyle: 1
+      Padding: 0
+
+ - Target: ListItem
+   Setters:
+     Foreground: "{DynamicResource ColorBrush1}"
+     Margin: 0,4
+
+ - Key: Hr
+   Target: Section
+   Setters:
+      Margin: "0,4,0,0"
+      BorderThickness: "0,1.5,0,0"
+      BorderBrush: "{StaticResource ColorBrush4}"
+      FontSize: 4
+
+ - Key: BlockCodeBorder
+   Target: Border
+   Setters:
+      Background: "{DynamicResource ColorBrush4}"
+      Opacity:  0.8
+      CornerRadius: 5 
+      Margin: 2

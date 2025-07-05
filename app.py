@@ -1,11 +1,11 @@
 from google import genai
 from google.genai import types
 import os
+import time
 from flask import Flask, request, abort, send_file, render_template
 
 app = Flask(__name__)
 
-# 建议把 get 函数改名为 generate_response，更语义化
 def generate_response(query: str, searching: bool = False) -> str:
     api_key = os.getenv("api_key")
     if not api_key:
@@ -25,7 +25,6 @@ def generate_response(query: str, searching: bool = False) -> str:
     )
 
     if searching:
-        # 如果需要联网搜索，就给工具列表添加 GoogleSearch
         base_config.tools = [types.Tool(google_search=types.GoogleSearch())]
         app.logger.debug("联网搜索已开启。")
 
@@ -35,9 +34,17 @@ def generate_response(query: str, searching: bool = False) -> str:
         config=base_config
     )
 
-    # 用双引号包裹 response.text，防止标签语法错误
     safe_text = response.text.replace('"', '\\"')
-    return f'<TextBlock Text="{safe_text}" />'
+    t = str(time.time())
+    os.system(f"mkdir /tmp/{t}/")
+    os.system(f'cp -r "HomepageBuilder-0.14.5" "/tmp/{t}/"')
+    with open(f"/tmp/{t}/PCL-Intelligence/libraries/response.md", "w", encoding="utf-8") as f:
+        f.write(safe_text)
+    os.system(f"cd /tmp/{t}/PCL-Intelligence/")
+    os.system("builder build")
+    with open("output.xaml", "r", encoding="utf-8") as re:
+        xaml = re.read()
+    return xaml
 
 @app.route("/Custom.xaml", methods=["GET"])
 def trigger():
