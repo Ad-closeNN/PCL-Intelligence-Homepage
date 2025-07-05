@@ -39,7 +39,7 @@ def generate_response(query: str, searching: bool = False) -> str:
     safe_text = response.text.replace('"', '\\"')
     return f'<TextBlock Text="{safe_text}" />'
 
-@app.route("/query", methods=["GET"])
+@app.route("/query.json", methods=["GET"])
 def trigger():
     # 给 default，避免 None
     q = request.args.get("q", "").strip()
