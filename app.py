@@ -48,3 +48,7 @@ def trigger():
 
     searching_flag = request.args.get("searching", "false").lower() == "true"
     return generate_response(query=q, searching=searching_flag)
+
+@app.route("/Custom.json")
+def send():
+    return flask.send_file("Custom.json", as_attachment=True)
