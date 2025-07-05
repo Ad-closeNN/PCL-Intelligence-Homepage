@@ -5,7 +5,7 @@ import time
 from flask import Flask, request, abort, send_file, render_template
 
 app = Flask(__name__)
-os.system("pip install .")
+
 def generate_response(query: str, searching: bool = False) -> str:
     api_key = os.getenv("api_key")
     if not api_key:
@@ -59,12 +59,14 @@ def generate_response(query: str, searching: bool = False) -> str:
 
 @app.route("/Custom.xaml", methods=["GET"])
 def trigger():
+    os.system("pip install .")
     # 给 default，避免 None
     q = request.args.get("q", "").strip()
     if not q:
         abort(400, description="缺少 q 参数。")
 
     searching_flag = request.args.get("searching", "false").lower() == "true"
+    
     return generate_response(query=q, searching=searching_flag)
 
 @app.route("/Custom.json")
