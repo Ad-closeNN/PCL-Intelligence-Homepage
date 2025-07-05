@@ -48,7 +48,7 @@ def generate_response(query: str, searching: bool = False) -> str:
     with open(f"/tmp/HB/__LIBRARY__.yml", "w", encoding="utf-8") as f:
         f.write(content)
     os.system('builder build --output-path "/tmp/HB/Custom.xaml')
-    with open("Custom.xaml", "r", encoding="utf-8") as re:
+    with open("/tmp/HB/Custom.xaml", "r", encoding="utf-8") as re:
         xaml = re.read()
     return xaml
 
