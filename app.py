@@ -33,9 +33,9 @@ def generate_response(query: str, searching: bool = False) -> str:
         contents=query,
         config=base_config
     )
-
+    print(type(response.text))
     safe_text = response.text
-    print(type(safe_text))
+    
     os.system(f"mkdir /tmp/HB")
     with open(f"/tmp/HB/response.md", "w", encoding="utf-8") as f:
         f.write(safe_text)
