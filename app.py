@@ -34,15 +34,20 @@ def generate_response(query: str, searching: bool = False) -> str:
         config=base_config
     )
 
-    safe_text = response.text.replace('"', '\\"')
-    t = str(time.time())
-    os.system(f"mkdir /tmp/{t}/")
-    os.system(f'cp -r "HomepageBuilder-0.14.5" "/tmp/{t}/"')
-    with open(f"/tmp/{t}/PCL-Intelligence/libraries/response.md", "w", encoding="utf-8") as f:
+    safe_text = response
+    os.system(f"mkdir /tmp/HB")
+    with open(f"/tmp/HB/response.md", "w", encoding="utf-8") as f:
         f.write(safe_text)
-    os.system(f"cd /tmp/{t}/PCL-Intelligence/")
-    os.system("builder build")
-    with open("output.xaml", "r", encoding="utf-8") as re:
+    content = """name: external
+    fill:
+    templates:
+        - MarkdownCard
+        - Raw
+    """
+    with open(f"/tmp/HB/__LIBRARY__.yml", "w", encoding="utf-8") as f:
+        f.write(content)
+    os.system('builder build --output-path "/tmp/HB/Custom.xaml')
+    with open("Custom.xaml", "r", encoding="utf-8") as re:
         xaml = re.read()
     return xaml
 
