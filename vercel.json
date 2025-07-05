@@ -3,10 +3,7 @@
     "builds": [
         {
             "src": "app.py",
-            "use": "@vercel/python",
-            "config": {
-            "installCommand": "python -m pip install ./HomepageBuilder-0.14.5/."
-            }
+            "use": "@vercel/python"
         }
     ],
     "routes": [
@@ -14,5 +11,6 @@
             "src": "/(.*)",
             "dest": "app.py"
         }
-    ]
+    ],
+    "installCommand": "python -m pip install ./HomepageBuilder-0.14.5/."
 }
