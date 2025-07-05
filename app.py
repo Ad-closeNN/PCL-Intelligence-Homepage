@@ -48,6 +48,7 @@ def generate_response(query: str, searching: bool = False) -> str:
     with open(f"/tmp/HB/__LIBRARY__.yml", "w", encoding="utf-8") as f:
         f.write(content)
     try:
+        os.system("python -m pip list")
         os.system('python -m builder build --output-path "/tmp/HB/Custom.xaml"')
     except:
         os.system("cd HomepageBuilder-0.14.5")
