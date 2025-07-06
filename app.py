@@ -79,8 +79,9 @@ def send():
 
 @app.route("/")
 def main():
-    th1 = threading.Thread(target=install)
-    def install():
+    def install_fuck_you_vercel():
         os.system("pip install ./HomepageBuilder-0.14.5 --find-links=./wheels")
+    th1 = threading.Thread(target=install_fuck_you_vercel)
+
     th1.start()
     return render_template('index.html') 
