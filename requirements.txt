@@ -1,2 +1,3 @@
 Flask
 google-genai
+./HomepageBuilder-0.14.5
