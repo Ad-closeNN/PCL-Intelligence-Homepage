@@ -1,5 +1,17 @@
 {
-    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "version": 2,
+    "builds": [
+        {
+            "src": "app.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "app.py"
+        }
+    ],
     "installCommand": "pip3 install -r requirements.txt",
     "buildCommand": "pip3 install -r requirements.txt",
     "outputDirectory": "./"
