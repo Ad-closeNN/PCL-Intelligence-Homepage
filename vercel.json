@@ -12,5 +12,5 @@
             "dest": "app.py"
         }
     ],
-    "installCommand": "pip install setuptools wheel && pip install ./HomepageBuilder-0.14.5"
+    "installCommand": "pip install setuptools wheel ./HomepageBuilder-0.14.5"
 }
