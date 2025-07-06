@@ -2,6 +2,7 @@ from google import genai
 from google.genai import types
 import os
 import time
+import threading
 from flask import Flask, request, abort, send_file, render_template
 
 app = Flask(__name__)
@@ -78,5 +79,8 @@ def send():
 
 @app.route("/")
 def main():
-    os.system("cd HomepageBuilder-0.14.5 && pip install .")
+    th1 = threading.Thread(target=install)
+    def install():
+        os.system("pip install ./HomepageBuilder-0.14.5 --find-links=./wheels")
+    th1.start()
     return render_template('index.html') 
