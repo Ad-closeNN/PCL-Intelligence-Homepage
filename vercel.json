@@ -11,6 +11,5 @@
             "src": "/(.*)",
             "dest": "app.py"
         }
-    ],
-    "installCommand": "pip3 install setuptools wheel ./HomepageBuilder-0.14.5"
+    ]
 }
