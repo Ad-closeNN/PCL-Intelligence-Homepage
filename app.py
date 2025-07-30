@@ -1,16 +1,42 @@
 from google import genai
 from google.genai import types
 import os
-import time
-import threading
+import sys
+import shutil
+import subprocess
 from flask import Flask, request, abort, send_file, render_template
+
 
 app = Flask(__name__)
 
-def generate_response(query: str, searching: bool = False) -> str:
+def install_and_import(package):
+        try:
+            # 尝试直接导入
+            __import__(package)
+        except ImportError:
+            # 如果导入失败，则安装到 /tmp 目录
+            print(f"'{package}' not found. Installing to /tmp...")
+            # 使用 subprocess 调用 pip 命令
+            try:
+                shutil.copytree("./HomepageBuilder-a", "/tmp/HomepageBuilder-a")
+            except FileExistsError as e:
+                print("What a OneYear? FileExists?\n"+str(e))
+                
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "/tmp/HomepageBuilder-a/.", "--target", "/tmp"])
+            
+            # 将 /tmp 添加到 sys.path
+            if '/tmp' not in sys.path:
+                sys.path.insert(0, '/tmp')
+            
+            # 再次尝试导入
+            __import__("homepagebuilder")
+
+def generate_response(query: str) -> str:
+    import homepagebuilder.main
     api_key = os.getenv("api_key")
+    #api_key = "See 什么 See 我删了 (*^_^*)"
     if not api_key:
-        abort(500, description="服务器未配置 API Key，请检查环境变量 GOOGLE_API_KEY。")
+        abort(500, description="服务器未配置 API Key，请检查环境变量 api_key。")
 
     client = genai.Client(api_key=api_key)
 
@@ -24,11 +50,12 @@ def generate_response(query: str, searching: bool = False) -> str:
             '在中文和英文之间加入一个空格。'
         )
     )
-
+    """ TODO
     if searching:
         base_config.tools = [types.Tool(google_search=types.GoogleSearch())]
         app.logger.debug("联网搜索已开启。")
-
+    """
+    
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=query,
@@ -37,25 +64,22 @@ def generate_response(query: str, searching: bool = False) -> str:
     print(type(response.text))
     safe_text = response.text
     
-    os.system(f"mkdir /tmp/HB")
-    with open(f"/tmp/HB/response.md", "w", encoding="utf-8") as f:
-        f.write(str(safe_text))
-    content = """name: external
-    fill:
-    templates:
-        - MarkdownCard
-        - Raw
-    """
-    with open(f"/tmp/HB/__LIBRARY__.yml", "w", encoding="utf-8") as f:
-        f.write(content)
+    # 创建文件夹
+    if not os.path.exists("/tmp/Homepage"):
+        os.makedirs("/tmp/Homepage", exist_ok=True)
+        shutil.copytree("/var/task/BaseProject", "/tmp/Homepage", dirs_exist_ok=True)
+    # 把生成的内容放到 Custom.md
     try:
-        os.system("python -m pip list")
-        os.system('python -m builder build --output-path "/tmp/HB/Custom.xaml"')
-    except:
-        os.system("cd HomepageBuilder-0.14.5")
-        os.system("pip install .")
-    with open("/tmp/HB/Custom.xaml", "r", encoding="utf-8") as re:
-        xaml = re.read()
+        with open(f"/tmp/Homepage/libraries/Custom.md", "w", encoding="utf-8") as f:
+            f.write(str(safe_text)) # Holy shit sometimes it does not work!(Maybe)
+    except Exception as e:
+        print(str(e))
+
+    os.chdir("/tmp/Homepage")
+    sys.argv = ['prog_name', 'build', '--output-path', 'Custom.xaml']
+    homepagebuilder.main.main()
+    with open("/tmp/Homepage/Custom.xaml", "r", encoding="utf-8") as raw:
+        xaml = raw.read()
     return xaml
 
 @app.route("/Custom.xaml", methods=["GET"])
@@ -66,22 +90,18 @@ def trigger():
     if not q:
         abort(400, description="缺少 q 参数。")
 
-    searching_flag = request.args.get("searching", "false").lower() == "true"
-    
-    return generate_response(query=q, searching=searching_flag)
+    #searching_flag = request.args.get("searching", "false").lower() == "true"
+    install_and_import("homepagebuilder")
+    #return generate_response(query=q, searching=searching_flag)
+    return generate_response(query=q)
 
 @app.route("/Custom.json")
 def send():
     q = request.args.get("q", "").strip()
     with open("/tmp/Custom.json", "w", encoding="utf-8") as fa:
-        fa.write('{"Title": "'+q+'","Description": "PCL Intelligence"}')
+        fa.write('{"Title": "'+q+'","Description": "PCL Intelligence Homepage"}')
     return send_file("/tmp/Custom.json", as_attachment=True)
 
 @app.route("/")
 def main():
-    def install_fuck_you_vercel():
-        os.system("pip install ./HomepageBuilder-0.14.5 --find-links=./wheels")
-    th1 = threading.Thread(target=install_fuck_you_vercel)
-
-    th1.start()
-    return render_template('index.html') 
+    return render_template('index.html')

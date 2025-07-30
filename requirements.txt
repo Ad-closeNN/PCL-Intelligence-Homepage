@@ -1,3 +1,2 @@
 Flask
 google-genai
--e git+https://github.com/Light-Beacon/HomepageBuilder.git@v0.14.7#egg=HomepageBuilder
