@@ -104,7 +104,7 @@ def generate_response(query: str, searching: bool):
 @app.route("/Custom.xaml", methods=["GET"])
 def trigger():
     q = request.args.get("q", "").strip()
-    if not q:
+    if not q or q == "":
         #abort(400, description="缺少 query(q) 参数。")
         return render_template("empty.html")
     search_flag = request.args.get("search", "false").lower() == "true" # bool var
@@ -124,4 +124,4 @@ def main():
 
 @app.route("/version")
 def pcl_version_check():
-    return "1.1.0"
+    return "1.1.1"

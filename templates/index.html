@@ -72,9 +72,11 @@ xmlns:local="clr-namespace:PCL;assembly=Plain Craft Launcher 2">
 
 <Grid>
     <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="114514*"/>
-        <ColumnDefinition Width="114514*"/>
+        <ColumnDefinition Width="1*"/>
+        <ColumnDefinition Width="1*"/>
+        <ColumnDefinition Width="1*"/>
     </Grid.ColumnDefinitions>
-<local:MyTextButton Grid.Column="0" HorizontalAlignment="Left" EventType="打开网页" EventData="https://github.com/Ad-closeNN/PCL-Intelligence-Homepage">GitHub 仓库</local:MyTextButton>
-<TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="由 Vercel &amp; Google 提供云服务"/>
+<local:MyTextButton Grid.Column="0" Margin="0,0,0,10" HorizontalAlignment="Left" EventType="打开网页" EventData="https://github.com/Ad-closeNN/PCL-Intelligence-Homepage" Text="GitHub 仓库"/>
+<TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="请求需要较长时间，请耐心等待"/>
+<TextBlock Grid.Column="2" Margin="0,0,0,10" HorizontalAlignment="Right" Text="由 Vercel &amp; Google 提供云服务"/>
 </Grid>
