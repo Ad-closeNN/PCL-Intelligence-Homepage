@@ -1,1 +1,0 @@
-<local:MyImage Style="{StaticResource InnerImage}" Source="${source}"/>

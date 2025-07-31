@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 import subprocess
+import zipfile
 from flask import Flask, request, abort, send_file, render_template
 
 
@@ -18,21 +19,27 @@ def install_and_import(package):
             print(f"'{package}' not found. Installing to /tmp...")
             # 使用 subprocess 调用 pip 命令
             try:
-                shutil.copytree("./HomepageBuilder-a", "/tmp/HomepageBuilder-a")
+                #os.makedirs("/tmp/HomepageBuilder-a", exist_ok=True)
+
+                with zipfile.ZipFile("/var/task/HomepageBuilder-0.14.8.zip", 'r') as zip_ref:
+                    zip_ref.extractall("/tmp/")
             except FileExistsError as e:
                 print("What a OneYear? FileExists?\n"+str(e))
-                
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "/tmp/HomepageBuilder-a/.", "--target", "/tmp"])
+            shutil.copy2("/var/task/ProjectInfo.yml", "/tmp/HomepageBuilder-0.14.8/src/homepagebuilder/resources/configs/ProjectInfo.yml")
+            shutil.copy2("/var/task/setup.py", "/tmp/HomepageBuilder-0.14.8/setup.py")
+
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "/tmp/HomepageBuilder-0.14.8/.", "--target", "/tmp/"])
             
             # 将 /tmp 添加到 sys.path
-            if '/tmp' not in sys.path:
-                sys.path.insert(0, '/tmp')
+            if '/tmp/' not in sys.path:
+                sys.path.insert(0, '/tmp/')
             
             # 再次尝试导入
             __import__("homepagebuilder")
 
-def generate_response(query: str) -> str:
+def generate_response(query: str):
     import homepagebuilder.main
+    
     api_key = os.getenv("api_key")
     #api_key = "See 什么 See 我删了 (*^_^*)"
     if not api_key:
@@ -44,8 +51,7 @@ def generate_response(query: str) -> str:
     base_config = types.GenerateContentConfig(
         thinking_config=types.ThinkingConfig(thinking_budget=0),  # 关闭深度思考
         system_instruction=(
-            'You are a helpful assistant. Your name is PAI. '
-            'You must use Simplified Chinese to answer. '
+            'You must speak Simplified Chinese.'
             'You are an AI assistant developed by PCL-Community, with responses generated based on the Google Gemini 2.5 Flash model. '
             '在中文和英文之间加入一个空格。'
         )
@@ -61,7 +67,7 @@ def generate_response(query: str) -> str:
         contents=query,
         config=base_config
     )
-    print(type(response.text))
+    
     safe_text = response.text
     
     # 创建文件夹
@@ -71,7 +77,7 @@ def generate_response(query: str) -> str:
     # 把生成的内容放到 Custom.md
     try:
         with open(f"/tmp/Homepage/libraries/Custom.md", "w", encoding="utf-8") as f:
-            f.write(str(safe_text)) # Holy shit sometimes it does not work!(Maybe)
+            f.write(str(safe_text))
     except Exception as e:
         print(str(e))
 

@@ -1,5 +1,0 @@
-<local:MyCard Visibility="Collapsed">
-<StackPanel>
-${$PCLModifierPresenter}
-</StackPanel>
-</local:MyCard>
