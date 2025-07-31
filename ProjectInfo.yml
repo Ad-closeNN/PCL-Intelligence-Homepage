@@ -1,0 +1,3 @@
+ProjectInfo.GitInfo.Enable: False
+ProjectInfo.GitInfo.NoProduceNotInstalledWarning: True
+ProjectInfo.GitInfo.NoProduceNotRepoWarning: True
