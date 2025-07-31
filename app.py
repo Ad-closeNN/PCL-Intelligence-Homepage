@@ -106,7 +106,7 @@ def trigger():
     q = request.args.get("q", "").strip()
     if not q or q == "":
         #abort(400, description="缺少 query(q) 参数。")
-        with open("templates/empty.html", "r", encoding="utf-8") as f:
+        with open("/var/task/templates/empty.html", "r", encoding="utf-8") as f:
             content = f.read()
         return content
     search_flag = request.args.get("search", "false").lower() == "true" # bool var
