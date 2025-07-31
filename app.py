@@ -106,7 +106,9 @@ def trigger():
     q = request.args.get("q", "").strip()
     if not q or q == "":
         #abort(400, description="缺少 query(q) 参数。")
-        return render_template("empty.html")
+        with open("templates/empty.html", "r", encoding="utf-8") as f:
+            content = f.read()
+        return content
     search_flag = request.args.get("search", "false").lower() == "true" # bool var
     install_and_import("homepagebuilder")
     return generate_response(query=q, searching=search_flag)
@@ -124,4 +126,4 @@ def main():
 
 @app.route("/version")
 def pcl_version_check():
-    return "1.1.1"
+    return "1.2.0"
