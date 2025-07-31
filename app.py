@@ -116,9 +116,14 @@ def trigger():
 @app.route("/Custom.json")
 def send():
     q = request.args.get("q", "").strip()
-    with open("/tmp/Custom.json", "w", encoding="utf-8") as f:
-        f.write('{"Title": "'+q+'","Description": "PCL Intelligence Homepage"}')
-    return send_file("/tmp/Custom.json", as_attachment=True)
+    if not q or q == "":
+    #with open("/tmp/Custom.json", "w", encoding="utf-8") as f:
+        return '{"Title": "400 Bad Request","Description": "PCL Intelligence Homepage"}'
+    #f.write('{"Title": "'+q+'","Description": "PCL Intelligence Homepage"}')
+    #return send_file("/tmp/Custom.json", as_attachment=True)
+    else:
+        return '{"Title": "'+q+'","Description": "PCL Intelligence Homepage"}'
+
 
 @app.route("/")
 def main():
