@@ -124,4 +124,4 @@ def main():
 
 @app.route("/version")
 def pcl_version_check():
-    return "1.0.0"
+    return "1.0.1"
