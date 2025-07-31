@@ -1,3 +1,4 @@
+
 <StackPanel Margin="0,-10,0,0" 
 xmlns:sys="clr-namespace:System;assembly=mscorlib" 
 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,19 +12,69 @@ xmlns:local="clr-namespace:PCL;assembly=Plain Craft Launcher 2">
 <Style TargetType="FlowDocumentScrollViewer"><Setter Property="IsSelectionEnabled" Value="False"/><Setter Property="VerticalScrollBarVisibility" Value="Hidden"/><Setter Property="Margin" Value="0"/></Style>
 
 </StackPanel.Resources>
-<local:MyCard Title="PCL Intelligence：主页面" Margin="0,5">
+
+<TextBlock HorizontalAlignment="center" Margin="0,0,0,10" Foreground="{DynamicResource ColorBrush2}" FontSize="40" TextWrapping="Wrap"
+               FontFamily="HarmonyOS Sans, HarmonyOS Sans SC, MiSans, Times New Roman, Microsoft YaHei UI, 微软雅黑"
+               Text="PCL Intelligence" />
+
+<local:MyCard Title="🚫 PCL Intelligence：未联网版" Margin="0,5">
     <StackPanel Margin="25,40,23,15">
     <Grid>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="1*"/>
         <ColumnDefinition Width="210"/> 
       </Grid.ColumnDefinitions>
-      <local:MyTextBox x:Name="jumpbox" Height="30" HintText="在此输入对话内容，注意不要按下 Enter 键，这会直接启动游戏。"/>
+      <local:MyTextBox x:Name="jumpbox" Height="30" HintText="在此输入内容，注意不要按下 Enter 键，这会直接启动游戏。"/>
         <local:MyButton HorizontalAlignment="right" Width="200"
-            Grid.Column="1" Text="对话->" EventType="打开帮助" 
+            Grid.Column="1" Text="发送->" EventType="打开帮助" 
             EventData="{Binding Path=Text,ElementName=jumpbox,StringFormat='{}https://pclintelligence.19991230.xyz/Custom.json?q={0}' }"/>
     </Grid>
-    <TextBlock Margin="0,10,0,0" HorizontalAlignment="right" Text="模型: Google Gemini 2.5 Flash (API)"/>
+
+    <Grid>
+          <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="114514*"/>
+        <ColumnDefinition Width="114514*"/> 
+      </Grid.ColumnDefinitions>
+    <TextBlock Grid.Column="0" Margin="0,10,0,0" HorizontalAlignment="left" Text="请勿输入个人敏感信息"/>
+    <TextBlock Grid.Column="1" Margin="0,10,0,0" HorizontalAlignment="right" Text="模型: Google Gemini 2.5 Flash (API)"/>
+    </Grid>
+    
+    
+    </StackPanel>
+</local:MyCard>
+
+<local:MyCard Title="🌍 PCL Intelligence：联网版" Margin="0,25">
+    <StackPanel Margin="25,40,23,15">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="1*"/>
+        <ColumnDefinition Width="210"/> 
+      </Grid.ColumnDefinitions>
+      <local:MyTextBox x:Name="jumpbox2" Height="30" HintText="在此输入内容，注意不要按下 Enter 键，这会直接启动游戏。"/>
+        <local:MyButton HorizontalAlignment="right" Width="200"
+            Grid.Column="1" Text="发送->" EventType="打开帮助" 
+            EventData="{Binding Path=Text,ElementName=jumpbox2,StringFormat='{}https://pclintelligence.19991230.xyz/Custom.json?q={0}&amp;search=true' }"/>
+    </Grid>
+
+    <Grid>
+          <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="114514*"/>
+        <ColumnDefinition Width="114514*"/> 
+      </Grid.ColumnDefinitions>
+    <TextBlock Grid.Column="0" Margin="0,10,0,0" HorizontalAlignment="left" Text="请勿输入个人敏感信息 | 联网会导致等待时间增加"/>
+    <TextBlock Grid.Column="1" Margin="0,10,0,0" HorizontalAlignment="right" Text="模型: Google Gemini 2.5 Flash (API)"/>
+    </Grid>
+    
+    
     </StackPanel>
 </local:MyCard>
 </StackPanel>
+
+<Grid>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="114514*"/>
+        <ColumnDefinition Width="114514*"/>
+    </Grid.ColumnDefinitions>
+<local:MyTextButton Grid.Column="0" HorizontalAlignment="Left" EventType="打开网页" EventData="https://github.com/Ad-closeNN/PCL-Intelligence-Homepage">GitHub 仓库</local:MyTextButton>
+<TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="由 Vercel &amp; Google 提供云服务"/>
+</Grid>

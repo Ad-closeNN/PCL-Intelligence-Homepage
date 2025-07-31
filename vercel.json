@@ -6,10 +6,13 @@
             "use": "@vercel/python"
         }
     ],
-    "routes": [
+    "rewrites": [
         {
-            "src": "/(.*)",
-            "dest": "app.py"
+            "source": "/(.*)",
+            "destination": "main.py"
         }
-    ]
+    ],
+    "redirects": [
+    { "source": "/easter-egg", "destination": "https://www.bilibili.com/video/av80433022", "permanent": false }
+  ]
 }

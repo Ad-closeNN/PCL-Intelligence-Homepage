@@ -16,7 +16,7 @@ def install_and_import(package):
             __import__(package)
         except ImportError:
             # 如果导入失败，则安装到 /tmp 目录
-            print(f"'{package}' not found. Installing to /tmp...")
+            print(f"'{package}' 未安装。")
             # 使用 subprocess 调用 pip 命令
             try:
                 #os.makedirs("/tmp/HomepageBuilder-a", exist_ok=True)
@@ -24,7 +24,7 @@ def install_and_import(package):
                 with zipfile.ZipFile("/var/task/HomepageBuilder-0.14.8.zip", 'r') as zip_ref:
                     zip_ref.extractall("/tmp/")
             except FileExistsError as e:
-                print("What a OneYear? FileExists?\n"+str(e))
+                print("文件存在：\n"+str(e))
             shutil.copy2("/var/task/ProjectInfo.yml", "/tmp/HomepageBuilder-0.14.8/src/homepagebuilder/resources/configs/ProjectInfo.yml")
             shutil.copy2("/var/task/setup.py", "/tmp/HomepageBuilder-0.14.8/setup.py")
 
@@ -37,9 +37,8 @@ def install_and_import(package):
             # 再次尝试导入
             __import__("homepagebuilder")
 
-def generate_response(query: str):
-    import homepagebuilder.main
-    
+def generate_response(query: str, searching: bool):
+    import homepagebuilder.main # 有用吗我不知道
     api_key = os.getenv("api_key")
     #api_key = "See 什么 See 我删了 (*^_^*)"
     if not api_key:
@@ -47,29 +46,34 @@ def generate_response(query: str):
 
     client = genai.Client(api_key=api_key)
 
-    # 公共的 config
     base_config = types.GenerateContentConfig(
         thinking_config=types.ThinkingConfig(thinking_budget=0),  # 关闭深度思考
         system_instruction=(
             'You must speak Simplified Chinese.'
-            'You are an AI assistant developed by PCL-Community, with responses generated based on the Google Gemini 2.5 Flash model. '
+            'You are an AI assistant, with responses generated based on the Google Gemini 2.5 Flash model.'
             '在中文和英文之间加入一个空格。'
+            'Use measurement units common in Mainland China (meters, kilograms, degrees Celsius, etc.).'
+            'Use China’s official currency (Renminbi, “yuan”).'
+            'Consider Mainland China’s holidays, customs, geography, and cuisine.'
+            'When giving advice, reference Mainland China’s policies, regulations, city transportation, and climate.'
+            'Express time in Beijing Time (UTC+8) and dates in the format “YYYY 年 MM 月 DD 日”.'
+            'Maintain a written, formal tone in Simplified Chinese, adhering to Mainland China’s online and publishing standards without using Traditional Chinese or minority scripts.'
         )
     )
-    """ TODO
+    
     if searching:
         base_config.tools = [types.Tool(google_search=types.GoogleSearch())]
-        app.logger.debug("联网搜索已开启。")
-    """
+        print("联网搜索已开启。")
+    
     
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-2.5-flash", # 自行调整
         contents=query,
         config=base_config
     )
     
     safe_text = response.text
-    
+    """使用 HomepageBuilder 构建 Markdown -> XAML"""
     # 创建文件夹
     if not os.path.exists("/tmp/Homepage"):
         os.makedirs("/tmp/Homepage", exist_ok=True)
@@ -82,32 +86,42 @@ def generate_response(query: str):
         print(str(e))
 
     os.chdir("/tmp/Homepage")
-    sys.argv = ['prog_name', 'build', '--output-path', 'Custom.xaml']
+    sys.argv = ['prog_name', 'build', '--output-path', 'Custom_base.xaml']
     homepagebuilder.main.main()
+    with open("/tmp/Homepage/Custom_base.xaml", "r", encoding="utf-8") as raw:
+        xaml = raw.readlines()
+        with open("/tmp/Homepage/Custom.xaml", "w", encoding="utf-8") as f:
+            for line in xaml:
+                if line.startswith('<local:MyCard Title="'):
+                    f.write(f'<local:MyCard Title="{query}"'+' CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >')
+                else:
+                    f.write(line)
+    
     with open("/tmp/Homepage/Custom.xaml", "r", encoding="utf-8") as raw:
         xaml = raw.read()
     return xaml
 
 @app.route("/Custom.xaml", methods=["GET"])
 def trigger():
-    
-    # 给 default，避免 None
     q = request.args.get("q", "").strip()
     if not q:
-        abort(400, description="缺少 q 参数。")
-
-    #searching_flag = request.args.get("searching", "false").lower() == "true"
+        #abort(400, description="缺少 query(q) 参数。")
+        return render_template("empty.html")
+    search_flag = request.args.get("search", "false").lower() == "true"
     install_and_import("homepagebuilder")
-    #return generate_response(query=q, searching=searching_flag)
-    return generate_response(query=q)
+    return generate_response(query=q, search=search_flag)
 
 @app.route("/Custom.json")
 def send():
     q = request.args.get("q", "").strip()
-    with open("/tmp/Custom.json", "w", encoding="utf-8") as fa:
-        fa.write('{"Title": "'+q+'","Description": "PCL Intelligence Homepage"}')
+    with open("/tmp/Custom.json", "w", encoding="utf-8") as f:
+        f.write('{"Title": "'+q+'","Description": "PCL Intelligence Homepage"}')
     return send_file("/tmp/Custom.json", as_attachment=True)
 
 @app.route("/")
 def main():
-    return render_template('index.html')
+    return render_template("index.html")
+
+@app.route("/version")
+def pcl_version_check():
+    return "1.0.0"
