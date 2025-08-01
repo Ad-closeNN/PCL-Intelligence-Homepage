@@ -2,6 +2,9 @@
 
 一个可以在 PCL2 启动器上使用 Google Gemini 或其他大模型的主页。
 
+> [!WARNING]
+> 项目仍在开发中，可能会出现不稳定的现象
+
 > [!NOTE]
 > 现在可以直接在 Plain Craft Launcher 2 启动器内的 `联网更新` 填写 `https://pclintelligence.19991230.xyz`。
 
@@ -14,9 +17,10 @@
 > - templates/empty.html
 
 > [!WARNING]
-> 1. 请务必按照以下指示部署你的 PCL Intelligence Homepage，不当的操作可能会导致你的 API Key 被泄露。
-> 2. 当前操作会导致**后续更新无法及时推送到你 Fork 后的仓库内**，请慎重考虑。
-> 3. 请关注 Vercel Usage 使用情况（位于 [Vercel 主菜单](https://vercel.com) 左侧），需重点关注 `Fluid Active CPU` 和 `Edge Requests` 使用量。请不要用超了。更多 Usage Limit 请查看主菜单横条上的 `Usage` 选项。
+> 1. 目前仅对 Vercel 和 Gemini Model 进行适配，如需使用自己的服务器与其他模型，请自行修改对应文件。
+> 2. 请务必按照以下指示部署你的 PCL Intelligence Homepage，不当的操作可能会导致你的 API Key 被泄露。
+> 3. 当前操作会导致**后续更新无法及时推送到你 Fork 后的仓库内**，请慎重考虑。
+> 4. 请关注 Vercel Usage 使用情况（位于 [Vercel 主菜单](https://vercel.com) 左侧），需重点关注 `Fluid Active CPU` 和 `Edge Requests` 使用量。不要用超了。更多 Usage Limit 请查看主菜单横条上的 `Usage` 选项。
 
 以下是来自 Google AI 文档中 **免费计划** 的 API 速率限制：
 
@@ -69,10 +73,13 @@
 
 ## TODO
 
+- 修复高并发时多目录同共享的问题
+- 优化查找 `<local:MyCard>` 的方式
 - 优化加载速度
 - 适配全局 URL
 - 支持解析通过 URL 获取列表（['sk1','sk2','sk3']）形式的 API Key
 - 支持当 `api_key` 和 `mode` 同时出现的时候优先选择 `mode` 方式。
+- 添加 429 Too Many Requests 错误的返回 XAML 页面
 
 ---
 
