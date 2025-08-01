@@ -5,9 +5,16 @@ import sys
 import shutil
 import subprocess
 import zipfile
+import random
 from flask import Flask, request, abort, send_file, render_template
 
-
+if os.getenv("mode").startswith("http"):
+    try:
+        import requests
+    except ImportError:
+        print("Requests 未安装：已启用多API模式，但未正确安装 requests 库。请检查 requirements.txt 或其他文件。")
+        requests = None
+        
 app = Flask(__name__)
 
 def install_and_import(package):
@@ -37,12 +44,52 @@ def install_and_import(package):
             # 再次尝试导入
             __import__("homepagebuilder")
 
+"""获取 API Key"""
+def get_api_key_local(): # 本地获取 API Key：mode = local 时执行
+        """本地返回随机 API"""
+        try:
+            with open("/var/task/config/api_key", 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+                if lines:
+                    random_api = random.choice(lines)
+                    return random_api
+                else:
+                    print("API Key 文件为空，请检查后重试。")
+                    abort(500, description="API Key 文件为空，请检查相关文件。")
+        except Exception as e:
+            e = str(e)
+            print(e)
+            abort(500, description="获取 API Key 时出错，请检查相关文件和后台日志。")       
+def get_api_key_link(url): # 联网获取 API：mode 以 http 开头时执行
+    if requests is None:
+        abort(500, "已启用多API模式，但未正确安装 requests 库。请检查 requirements.txt 或其他文件。")
+    request = requests.get(url)
+    if request.status_code != 200:
+        print(f"获取 API 失败，状态码：{request.status_code}")
+        abort(500, description="获取 API Key 时出错：状态码非200，请检查相关文件和后台日志。")
+    else:
+        api = request.text
+    return api
+
 def generate_response(query: str, searching: bool):
     import homepagebuilder.main # 有用吗我不知道
     api_key = os.getenv("api_key")
     #api_key = "See 什么 See 我删了 (*^_^*)"
-    if not api_key:
-        abort(500, description="服务器未配置 API Key，请检查环境变量 api_key。")
+    
+    """------单API Key/多API Key------
+    单API：直接在 Vercel 后台设置变量 api_key
+    多API：在 Vercel 后台设置变量 mode = multiple (单API Key无需设置mode)
+    """
+    if not api_key: # 此时 api_key = None
+        mode = os.getenv("mode")
+        if not mode: # mode = None, api_key = None
+            abort(500, description="服务器未正确配置 API 密钥(api_key) 或 请求模式(mode)，请检查变量。")
+        elif mode == "local":
+            api_key = get_api_key_local()
+        elif mode.startswith("http"):
+            api_key = get_api_key_link(url=mode)
+        else:
+            abort(500, description="服务器未正确配置 请求模式(mode)：mode被设置为了非 local/http 开头的内容，请检查变量。")
 
     client = genai.Client(api_key=api_key)
 
@@ -131,4 +178,4 @@ def main():
 
 @app.route("/version")
 def pcl_version_check():
-    return "1.2.0"
+    return "1.3.0"
