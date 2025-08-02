@@ -211,7 +211,7 @@ def send():
 
 @app.route("/")
 def main():
-    with open("/var/task/index.html", "r", encoding="utf-8") as f:
+    with open("/var/task/templates/index.html", "r", encoding="utf-8") as f:
         content = f.read()
         content = content.replace("https://pclintelligence.19991230.xyz", link.rstrip("/"))
     return content # v1.4.0 此时的 templates 失去了它本该被用作 Flask 渲染预设网页的价值（
