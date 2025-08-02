@@ -1,8 +1,9 @@
-
 <StackPanel Margin="0,-10,0,0" 
 xmlns:sys="clr-namespace:System;assembly=mscorlib" 
 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 xmlns:local="clr-namespace:PCL;assembly=Plain Craft Launcher 2">
+<StackPanel.Triggers>
+</StackPanel.Triggers>
 <StackPanel.Resources>
 <Style TargetType="ListItem"><Setter Property="Foreground" Value="{DynamicResource ColorBrush1}"/><Setter Property="Margin" Value="0,4"/></Style>
 <Style TargetType="List"><Setter Property="Foreground" Value="{DynamicResource ColorBrush3}"/><Setter Property="Margin" Value="20,6,0,6"/><Setter Property="MarkerStyle" Value="1"/><Setter Property="Padding" Value="0"/></Style>
@@ -10,75 +11,34 @@ xmlns:local="clr-namespace:PCL;assembly=Plain Craft Launcher 2">
 <Style TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="HorizontalAlignment" Value="Left"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="{DynamicResource ColorBrush1}"/></Style>
 <Style TargetType="FlowDocument"><Setter Property="FontFamily" Value="Microsoft YaHei UI"/><Setter Property="FontSize" Value="14"/><Setter Property="TextAlignment" Value="Left"/><Setter Property="Foreground" Value="{DynamicResource ColorBrush1}"/></Style>
 <Style TargetType="FlowDocumentScrollViewer"><Setter Property="IsSelectionEnabled" Value="False"/><Setter Property="VerticalScrollBarVisibility" Value="Hidden"/><Setter Property="Margin" Value="0"/></Style>
+<Style x:Key="Card" TargetType="local:MyCard"><Setter Property="Margin" Value="0,5"/></Style>
+<Style x:Key="InlineLink" TargetType="local:MyTextButton"><Setter Property="Foreground" Value="{DynamicResource ColorBrush1}"/></Style>
+<Style x:Key="H3" TargetType="Paragraph"><Setter Property="FontSize" Value="18"/><Setter Property="Margin" Value="0,10,0,3"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="{DynamicResource ColorBrush4}"/></Style>
+<Style x:Key="ContentStack" TargetType="StackPanel"><Setter Property="Margin" Value="20,40,20,20"/></Style>
+<Style x:Key="H1" TargetType="Paragraph"><Setter Property="FontSize" Value="24"/><Setter Property="Margin" Value="0,10,0,10"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="{DynamicResource ColorBrush3}"/></Style>
+<Style x:Key="Hr" TargetType="Section"><Setter Property="Margin" Value="0,4,0,0"/><Setter Property="BorderThickness" Value="0,1.5,0,0"/><Setter Property="BorderBrush" Value="{StaticResource ColorBrush4}"/><Setter Property="FontSize" Value="4"/></Style>
 
 </StackPanel.Resources>
-
-<TextBlock HorizontalAlignment="center" Margin="0,0,0,10" Foreground="{DynamicResource ColorBrush2}" FontSize="40" TextWrapping="Wrap"
-               FontFamily="HarmonyOS Sans, HarmonyOS Sans SC, MiSans, Times New Roman, Microsoft YaHei UI, 微软雅黑"
-               Text="PCL Intelligence" />
-
-<local:MyCard Title="🚫 PCL Intelligence：未联网版" Margin="0,5">
-    <StackPanel Margin="25,40,23,15">
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="1*"/>
-        <ColumnDefinition Width="210"/> 
-      </Grid.ColumnDefinitions>
-      <local:MyTextBox x:Name="jumpbox" Height="30" HintText="在此输入内容，注意不要按下 Enter 键，这会直接启动游戏。"/>
-        <local:MyButton HorizontalAlignment="right" Width="200"
-            Grid.Column="1" Text="发送->" EventType="打开帮助" 
-            EventData="{Binding Path=Text,ElementName=jumpbox,StringFormat='{}https://pclintelligence.19991230.xyz/Custom.json?q={0}' }"/>
-    </Grid>
-
-    <Grid>
-          <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="114514*"/>
-        <ColumnDefinition Width="114514*"/> 
-      </Grid.ColumnDefinitions>
-    <TextBlock Grid.Column="0" Margin="0,10,0,0" HorizontalAlignment="left" Text="请勿输入个人敏感信息"/>
-    <TextBlock Grid.Column="1" Margin="0,10,0,0" HorizontalAlignment="right" Text="模型: Google Gemini 2.5 Flash (API)"/>
-    </Grid>
-    
-    
-    </StackPanel>
-</local:MyCard>
-
-<local:MyCard Title="🌍 PCL Intelligence：联网版" Margin="0,25">
-    <StackPanel Margin="25,40,23,15">
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="1*"/>
-        <ColumnDefinition Width="210"/> 
-      </Grid.ColumnDefinitions>
-      <local:MyTextBox x:Name="jumpbox2" Height="30" HintText="在此输入内容，注意不要按下 Enter 键，这会直接启动游戏。"/>
-        <local:MyButton HorizontalAlignment="right" Width="200"
-            Grid.Column="1" Text="发送->" EventType="打开帮助" 
-            EventData="{Binding Path=Text,ElementName=jumpbox2,StringFormat='{}https://pclintelligence.19991230.xyz/Custom.json?q={0}&amp;search=true' }"/>
-    </Grid>
-
-    <Grid>
-          <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="114514*"/>
-        <ColumnDefinition Width="114514*"/> 
-      </Grid.ColumnDefinitions>
-    <TextBlock Grid.Column="0" Margin="0,10,0,0" HorizontalAlignment="left" Text="请勿输入个人敏感信息 | 联网会导致等待时间增加"/>
-    <TextBlock Grid.Column="1" Margin="0,10,0,0" HorizontalAlignment="right" Text="模型: Google Gemini 2.5 Flash (API)"/>
-    </Grid>
-    
-    
-    </StackPanel>
+<local:MyCard Title="你猜为什么来到了这" CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >
+<StackPanel Style="{StaticResource ContentStack}">
+<FlowDocumentScrollViewer >
+<FlowDocument>
+<Paragraph Style="{StaticResource H1}">肥肠抱歉</Paragraph>
+<Paragraph>Bro 输入了 <Bold>空的内容</Bold>。
+</Paragraph>
+<Section Style="{StaticResource Hr}"/>
+<Paragraph Style="{StaticResource H3}">恭喜你发现了一个彩蛋</Paragraph><Paragraph>点击查看：<local:MyTextButton Margin="0,0,0,-2" EventType="打开网页" EventData="https://pclintelligence.19991230.xyz/easter-egg">https://pclintelligence.19991230.xyz/easter-egg</local:MyTextButton></Paragraph>
+</FlowDocument>
+</FlowDocumentScrollViewer>
+</StackPanel>
 </local:MyCard>
 </StackPanel>
 
 <Grid>
     <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="1*"/>
-        <ColumnDefinition Width="1*"/>
-        <ColumnDefinition Width="1*"/>
+    <ColumnDefinition Width="1*"/>
     </Grid.ColumnDefinitions>
-<local:MyTextButton Grid.Column="0" Margin="0,0,0,10" HorizontalAlignment="Left" EventType="打开网页" EventData="https://github.com/Ad-closeNN/PCL-Intelligence-Homepage" Text="GitHub 仓库"/>
-<TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="请求需要较长时间，请耐心等待"/>
-<TextBlock Grid.Column="2" Margin="0,0,0,10" HorizontalAlignment="Right" Text="由 Vercel &amp; Google 提供云服务"/>
+<local:MyButton Grid.Column="0" Height="40" Margin="0,10,0,0" Text="返回 PCL Intelligence 主界面" EventType="刷新主页" ToolTip="返回 PCL Intelligence"/>
 </Grid>
 
 <!-- 来自 https://github.com/Light-Beacon/PCL2-NewsHomepage/blob/generated/generated/News.xaml#L298 -->

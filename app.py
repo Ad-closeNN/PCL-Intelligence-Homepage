@@ -6,24 +6,40 @@ import shutil
 import subprocess
 import zipfile
 import random
-from flask import Flask, request, abort, send_file, render_template
+import uuid
+from flask import Flask, abort, send_file, render_template
+import flask
 
-if os.getenv("mode").startswith("http"):
+try:
+    import requests
+except ImportError:
+    print("未安装 requests")
+
+"""
+if os.getenv("mode") is None:
+    print("Mode 为空")
+else:
     try:
-        import requests
+        if os.getenv("mode").startswith("http"):
+            import requests
     except ImportError:
         print("Requests 未安装：已启用多API模式，但未正确安装 requests 库。请检查 requirements.txt 或其他文件。")
         requests = None
-        
+"""
+
+link = os.getenv("link")
+if link is None:
+    print("变量 link 为空，请检查后重试。再不注意你就 500 Internal Server Error 了。")
+
 app = Flask(__name__)
 
-def install_and_import(package):
+def install_and_import():
         try:
             # 尝试直接导入
-            __import__(package)
+            import homepagebuilder
         except ImportError:
             # 如果导入失败，则安装到 /tmp 目录
-            print(f"'{package}' 未安装。")
+            print("homepagebuilder 未安装。")
             # 使用 subprocess 调用 pip 命令
             try:
                 #os.makedirs("/tmp/HomepageBuilder-a", exist_ok=True)
@@ -42,7 +58,7 @@ def install_and_import(package):
                 sys.path.insert(0, '/tmp/')
             
             # 再次尝试导入
-            __import__("homepagebuilder")
+            import homepagebuilder
 
 """获取 API Key"""
 def get_api_key_local(): # 本地获取 API Key：mode = local 时执行
@@ -51,8 +67,8 @@ def get_api_key_local(): # 本地获取 API Key：mode = local 时执行
             with open("/var/task/config/api_key", 'r', encoding='utf-8') as f:
                 lines = f.readlines()
                 if lines:
-                    random_api = random.choice(lines)
-                    return random_api
+                    random_api_key = random.choice(lines)
+                    return random_api_key
                 else:
                     print("API Key 文件为空，请检查后重试。")
                     abort(500, description="API Key 文件为空，请检查相关文件。")
@@ -67,24 +83,32 @@ def get_api_key_link(url): # 联网获取 API：mode 以 http 开头时执行
     if request.status_code != 200:
         print(f"获取 API 失败，状态码：{request.status_code}")
         abort(500, description="获取 API Key 时出错：状态码非200，请检查相关文件和后台日志。")
+    key = request.json()
+    print("Key 类型："+str(type(key)))
+    """服务器返回列表：['sk1', 'sk2', 'sk3', 'sk4']"""
+    if isinstance(key, list) and key: # and key: key ≠ 空
+        key = random.choice(key)
     else:
-        api = request.text
-    return api
+        print("获取 API Key 失败：服务器返回的内容不是列表或为空。")
+        abort(500, description="获取 API Key 时出错：服务器返回的内容不是列表或为空，请检查相关文件和后台日志。")
+    return key
 
-def generate_response(query: str, searching: bool):
+def generate_response(query: str, searching: bool, uid: str):
     import homepagebuilder.main # 有用吗我不知道
-    api_key = os.getenv("api_key")
+    """优先选择 mode"""
+    mode = os.getenv("mode")
     #api_key = "See 什么 See 我删了 (*^_^*)"
     
     """------单API Key/多API Key------
     单API：直接在 Vercel 后台设置变量 api_key
     多API：在 Vercel 后台设置变量 mode = multiple (单API Key无需设置mode)
     """
-    if not api_key: # 此时 api_key = None
-        mode = os.getenv("mode")
-        if not mode: # mode = None, api_key = None
+    if not mode: # 此时 api_key = None
+        api_key = os.getenv("api_key")
+        if not api_key: # mode = None, api_key = None
             abort(500, description="服务器未正确配置 API 密钥(api_key) 或 请求模式(mode)，请检查变量。")
-        elif mode == "local":
+    else:
+        if mode == "local":
             api_key = get_api_key_local()
         elif mode.startswith("http"):
             api_key = get_api_key_link(url=mode)
@@ -112,70 +136,86 @@ def generate_response(query: str, searching: bool):
         base_config.tools = [types.Tool(google_search=types.GoogleSearch())]
         print("联网搜索已开启。")
     
-    
     response = client.models.generate_content(
         model="gemini-2.5-flash", # 自行调整
         contents=query,
         config=base_config
     )
     
+    """ TODO
+    if response.s
+        with open("/var/task/templates/toomany.xaml", "r", encoding="utf-8") as f:
+            raw = f.read()
+        return raw
+    """
+    
     safe_text = response.text
     """使用 HomepageBuilder 构建 Markdown -> XAML"""
     # 创建文件夹
-    if not os.path.exists("/tmp/Homepage"):
-        os.makedirs("/tmp/Homepage", exist_ok=True)
-        shutil.copytree("/var/task/BaseProject", "/tmp/Homepage", dirs_exist_ok=True)
+    if not os.path.exists(f"/tmp/Homepage/{uid}"):
+        os.makedirs(f"/tmp/Homepage/{uid}", exist_ok=True)
+        shutil.copytree("/var/task/BaseProject", f"/tmp/Homepage/{uid}", dirs_exist_ok=True)
     # 把生成的内容放到 Custom.md
     try:
-        with open(f"/tmp/Homepage/libraries/Custom.md", "w", encoding="utf-8") as f:
+        with open(f"/tmp/Homepage/{uid}/libraries/Custom.md", "w", encoding="utf-8") as f:
             f.write(str(safe_text))
     except Exception as e:
         print(str(e))
 
-    os.chdir("/tmp/Homepage")
-    sys.argv = ['prog_name', 'build', '--output-path', 'Custom_base.xaml']
+    sys.argv = ['prog_name', 'build', '--output-path', f'/tmp/Homepage/{uid}/Custom_base.xaml']
     homepagebuilder.main.main()
-    with open("/tmp/Homepage/Custom_base.xaml", "r", encoding="utf-8") as raw:
+    with open(f"/tmp/Homepage/{uid}/Custom_base.xaml", "r", encoding="utf-8") as raw:
         xaml = raw.readlines()
-        with open("/tmp/Homepage/Custom.xaml", "w", encoding="utf-8") as f:
-            for line in xaml:
+        with open(f"/tmp/Homepage/{uid}/Custom.xaml", "w", encoding="utf-8") as f:
+            for line in xaml: # 不管了能用就行炸了再说 反正 Builder 输出的是规则的 别乱改了 :)
                 if line.startswith('<local:MyCard Title="'):
                     f.write(f'<local:MyCard Title="{query}"'+' CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >')
                 else:
                     f.write(line)
     
-    with open("/tmp/Homepage/Custom.xaml", "r", encoding="utf-8") as raw:
+    with open(f"/tmp/Homepage/{uid}/Custom.xaml", "r", encoding="utf-8") as raw:
         xaml = raw.read()
-    return xaml
+    with open("/var/task/templates/footer.xaml", "r", encoding="utf-8") as f:
+        footer = f.read()
+    return xaml+"\n\n"+footer
 
 @app.route("/Custom.xaml", methods=["GET"])
 def trigger():
-    q = request.args.get("q", "").strip()
+    q = flask.request.args.get("q", "").strip()
     if not q or q == "":
         #abort(400, description="缺少 query(q) 参数。")
-        with open("/var/task/templates/empty.html", "r", encoding="utf-8") as f:
+        with open("/var/task/templates/empty.xaml", "r", encoding="utf-8") as f:
+            """
+            Name: empty.xaml
+            easter-egg
+            return to homepage
+            """
             content = f.read()
+            content = content.replace("https://pclintelligence.19991230.xyz", link.rstrip("/"))
         return content
-    search_flag = request.args.get("search", "false").lower() == "true" # bool var
-    install_and_import("homepagebuilder")
-    return generate_response(query=q, searching=search_flag)
+    search_flag = flask.request.args.get("search", "false").lower() == "true" # bool var
+    install_and_import()
+    uid = uuid.uuid4().hex
+    try:
+        return generate_response(query=q, searching=search_flag, uid=uid)
+    finally: # 删库(libraries)跑路 :)
+        shutil.rmtree(f"/tmp/Homepage/{uid}")
 
 @app.route("/Custom.json")
 def send():
-    q = request.args.get("q", "").strip()
+    q = flask.request.args.get("q", "").strip()
     if not q or q == "":
-    #with open("/tmp/Custom.json", "w", encoding="utf-8") as f:
         return '{"Title": "400 Bad Request","Description": "PCL Intelligence Homepage"}'
-    #f.write('{"Title": "'+q+'","Description": "PCL Intelligence Homepage"}')
-    #return send_file("/tmp/Custom.json", as_attachment=True)
     else:
         return '{"Title": "'+q+'","Description": "PCL Intelligence Homepage"}'
 
-
 @app.route("/")
 def main():
-    return render_template("index.html")
+    with open("/var/task/index.html", "r", encoding="utf-8") as f:
+        content = f.read()
+        content = content.replace("https://pclintelligence.19991230.xyz", link.rstrip("/"))
+    return content # v1.4.0 此时的 templates 失去了它本该被用作 Flask 渲染预设网页的价值（
 
 @app.route("/version")
 def pcl_version_check():
-    return "1.3.0"
+    return "1.4.0"

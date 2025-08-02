@@ -2,19 +2,13 @@
 
 一个可以在 PCL2 启动器上使用 Google Gemini 或其他大模型的主页。
 
-> [!WARNING]
-> 项目仍在开发中，可能会出现不稳定的现象
-
-> [!NOTE]
-> 现在可以直接在 Plain Craft Launcher 2 启动器内的 `联网更新` 填写 `https://pclintelligence.19991230.xyz`。
+> [!CAUTION]
+> - 项目仍在开发中，可能会出现不稳定的现象。
+> - 本项目仅供学习交流，请在遵守当地法律法规的情况下使用。中国大陆用户请勿输入政治敏感等违法内容。
 
 ## 部署方法
 
 ### 前言
-> [!TIP]
-> 当前未适配全局 URL（即主页按钮发送对 Gemini 请求的链接），部分文件指向的链接仍为 `https://pclintelligence.19991230.xyz`。如需自行部署，请自行更改相关链接文件：
-> - templates/index.html
-> - templates/empty.html
 
 > [!WARNING]
 > 1. 目前仅对 Vercel 和 Gemini Model 进行适配，如需使用自己的服务器与其他模型，请自行修改对应文件。
@@ -22,7 +16,9 @@
 > 3. 当前操作会导致**后续更新无法及时推送到你 Fork 后的仓库内**，请慎重考虑。
 > 4. 请关注 Vercel Usage 使用情况（位于 [Vercel 主菜单](https://vercel.com) 左侧），需重点关注 `Fluid Active CPU` 和 `Edge Requests` 使用量。不要用超了。更多 Usage Limit 请查看主菜单横条上的 `Usage` 选项。
 
-以下是来自 Google AI 文档中 **免费计划** 的 API 速率限制：
+### 速率限制
+
+以下是来自 Google AI 文档中 **免费计划** 的 API 速率限制 [[原版文档]](https://ai.google.dev/gemini-api/docs/rate-limits)：
 
 | 模型                | 每分钟请求数  | 每分钟输入数（令牌）       | 每日请求数   |
 |----------------------|------|-----------|-------|
@@ -49,14 +45,32 @@
 4. 使用 Vercel 部署：[Create New Project](https://vercel.com/new)
 
     需要填写相关变量:
-    - 使用**单个 API 密钥**（如需使用多个 API 密钥，请勿填写此变量）：
+    - 如果使用**单个 API 密钥**（如需使用多个 API 密钥，请勿填写此变量）：
         - Env Name: `api_key`
         - Env Value: `你的 API 密钥`
-    - 使用**多个 API 密钥**，**不能填写**上面的 `api_key`：
+    - 如果使用**多个 API 密钥**，**不能填写**上面的 `api_key`：
         - Env Name: `mode`
         - Env Value:
             - `local`：本地获取 API Key，位于 config/api_key，一行一个 API Key。
             - URL 链接：如 `https://google-api-key.pclc.cc`，**必须以 http 开头**，返回的内容需为**单个 API Key**。
+    - 请求地址（即部署后的主页按下按钮请求的链接，填写 Vercel 部署后的链接）:
+        - Env Name: `link`
+        - Env Value：域名或 IP 地址，**必须以 http 开头**
+        
+> [!NOTE]
+> （填写变量 `link` ）如果不知道怎么操作，请按照下列指示操作：
+> 1. 先不填这个变量 `link`。但是上面 `api_key` 或 `mode` **需填**（二选一），填完**直接部署**。
+> 2. 部署完成后可根据步骤5、6的可选步骤优化部署。
+> 3. 来到 Vercel 项目的 **Settings**，在左侧菜单选择 **Environment Variables**。
+> 4. `Key` 填入 `link`；`Value` 填入 **部署后的链接（优先选有绑定好的自定义域名）**（如`https:/url.pcl-community.org` 或 `https://pih.vercel.app`）。**必须带上协议！** 如 `http://` `https://`。
+> 5. 点击 `Save` 按钮，保存变量。
+> 6. 点击右下角弹出的 `Redeploy` 按钮，重新部署 ![Redeploy](README/Redeploy.png)
+
+> [!WARNING]
+> 如果你把 `api_key` 和 `mode` 都填了，其使用的顺序为 `mode`>`api_key`（也就是优先使用多个 API Key）。
+>
+> 如果你什么都不填，或者 `mode` 填的不是 `local` 或 以`http`开头的链接，会报 **500 内部服务器错误**。
+
 5. （可选、**建议**）在 Vercel 绑定自定义域名（中国大陆网络连接 `vercel.app` 比较困难）。
 6. （可选、**不建议**）对 Vercel Anycast IP 进行优选。[LINUX DO 文章](https://linux.do/t/topic/128871)
 7. 在 PCL2 启动器选择 `联网更新`，输入从 Vercel 部署的根 URL，例如 `https://abc.vercel.app` 或 `https://intelligence.pcl-community.org`。
@@ -73,13 +87,8 @@
 
 ## TODO
 
-- 修复高并发时多目录同共享的问题
-- 优化查找 `<local:MyCard>` 的方式
 - 优化加载速度
-- 适配全局 URL
-- 支持解析通过 URL 获取列表（['sk1','sk2','sk3']）形式的 API Key
-- 支持当 `api_key` 和 `mode` 同时出现的时候优先选择 `mode` 方式。
-- 添加 429 Too Many Requests 错误的返回 XAML 页面
+- 修复安装包时，多个请求可能会重复安装的问题
 
 ---
 
