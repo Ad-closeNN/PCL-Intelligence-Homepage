@@ -202,7 +202,12 @@ def trigger():
     try:
         return generate_response(query=q, searching=search_flag, uid=uid)
     finally: # 删库(libraries)跑路 :)
-        shutil.rmtree(f"/tmp/Homepage/{uid}")
+        try:
+            shutil.rmtree(f"/tmp/Homepage/{uid}")
+            print(f"已删除请求文件夹 {uid}。")
+        except Exception as e:
+            e = str(e)
+            print(f"无法删除请求文件夹 {uid}：{e}。")
 
 @app.route("/Custom.json")
 def send():

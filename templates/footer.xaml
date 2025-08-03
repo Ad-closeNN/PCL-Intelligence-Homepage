@@ -19,23 +19,7 @@ xmlns:local="clr-namespace:PCL;assembly=Plain Craft Launcher 2">
 <Style x:Key="InnerImage" TargetType="Image"><Setter Property="MaxHeight" Value="500"/><Setter Property="HorizontalAlignment" Value="Center"/></Style>
 
 </StackPanel.Resources>
-<local:MyCard Title="429 Too many requests / 请求超出限制" CanSwap="True" IsSwaped="False" Style="{StaticResource Card}" >
-<StackPanel Style="{StaticResource ContentStack}">
-<FlowDocumentScrollViewer >
-<FlowDocument>
-<Paragraph Style="{StaticResource H1}">429 Too many requests / 请求超出限制</Paragraph><Paragraph>如你所见，你触发了 <Bold>Google Gemini API</Bold> 的每分钟或每日上限。可参见 <local:MyTextButton Margin="0,0,0,-2" EventType="打开网页" Text="#速率限制" EventData="https://github.com/Ad-closeNN/PCL-Intelligence-Homepage#%E9%80%9F%E7%8E%87%E9%99%90%E5%88%B6"></local:MyTextButton> 查询对应模型的速率限制数据。</Paragraph><Paragraph>以下是来自 Google AI 文档中 <Bold>免费计划</Bold> 的 API 速率限制数据：</Paragraph><BlockUIContainer><local:MyImage Style="{StaticResource InnerImage}" Source="https://i2.hdslb.com/bfs/new_dyn/c5ece227ed85f47003badc39d232a7293493090681686120.png"/></BlockUIContainer><Paragraph>注：</Paragraph><Paragraph>RPM：每分钟请求数 <Bold>R</Bold>equests <Bold>P</Bold>er <Bold>M</Bold>inute</Paragraph><Paragraph>TPM：每分钟令牌数 <Bold>T</Bold>okens <Bold>P</Bold>er <Bold>M</Bold>inute</Paragraph><Paragraph>RPD：每日请求数 <Bold>R</Bold>equests <Bold>P</Bold>er <Bold>D</Bold>ay</Paragraph><Section Style="{StaticResource Hr}"/><Paragraph>如果你正在使用单 API Key 模式，可以尝试使用多 API Key 模式，每次请求都可以随机调用 API Key。参见 <local:MyTextButton Margin="0,0,0,-2" EventType="打开网页" Text="#部署" EventData="https://github.com/Ad-closeNN/PCL-Intelligence-Homepage#%E9%83%A8%E7%BD%B2"></local:MyTextButton>。</Paragraph>
-</FlowDocument>
-</FlowDocumentScrollViewer>
 </StackPanel>
-</local:MyCard>
-</StackPanel>
-
-<Grid>
-    <Grid.ColumnDefinitions>
-    <ColumnDefinition Width="1*"/>
-    </Grid.ColumnDefinitions>
-<local:MyButton Grid.Column="0" Height="40" Margin="0,10,0,0" Text="返回 PCL Intelligence 主界面" EventType="刷新主页" ToolTip="返回 PCL Intelligence"/>
-</Grid>
 
 <!-- 来自 https://github.com/Light-Beacon/PCL2-NewsHomepage/blob/generated/generated/News.xaml#L298 -->
 
