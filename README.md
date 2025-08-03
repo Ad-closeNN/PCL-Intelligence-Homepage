@@ -3,16 +3,16 @@
 一个可以在 PCL2 启动器上使用 Google Gemini 或其他大模型的主页。
 
 > [!CAUTION]
-> - 项目仍在开发中，可能会出现不稳定的现象。
 > - 本项目仅供学习交流，请在遵守当地法律法规的情况下使用。中国大陆用户请勿输入政治敏感等违法内容。
+> - 项目仍在开发中，可能会出现不稳定的现象。
 
 ## 部署方法
 
 ### 前言
 
 > [!WARNING]
-> 1. 目前仅对 Vercel 和 Gemini Model 进行适配，如需使用自己的服务器与其他模型，请自行修改对应文件。
-> 2. 请务必按照以下指示部署你的 PCL Intelligence Homepage，不当的操作可能会导致你的 API Key 被泄露。
+> 1. 目前仅对 Vercel 和 Gemini 模型进行适配，如需使用自己的服务器与其他模型，请自行修改对应文件。
+> 2. 请务必按照以下指示部署你的 PCL Intelligence 主页，不当的操作可能会导致你的 API Key 被泄露。
 > 3. 当前操作会导致**后续更新无法及时推送到你 Fork 后的仓库内**，请慎重考虑。
 > 4. 请关注 Vercel Usage 使用情况（位于 [Vercel 主菜单](https://vercel.com) 左侧），需重点关注 `Fluid Active CPU` 和 `Edge Requests` 使用量。不要用超了。更多 Usage Limit 请查看主菜单横条上的 `Usage` 选项。
 
@@ -52,8 +52,8 @@
         - Env Name: `mode`
         - Env Value:
             - `local`：本地获取 API Key，位于 config/api_key，一行一个 API Key。
-            - URL 链接：如 `https://google-api-key.pclc.cc`，**必须以 http 开头**，返回的内容需为**单个 API Key**。
-    - 请求地址（即部署后的主页按下按钮请求的链接，填写 Vercel 部署后的链接）:
+            - URL 链接：如 `https://google-api-key.pclc.cc`，**必须以 http 开头**，返回的内容需为 **单个 API Key** 或 **以列表**（如 `['sk1', 'sk2', 'sk3', 'sk4']`）**的方式返回 API Key**。
+    - 请求地址（主页需要点击按钮来请求这个 Vercel 服务器，让服务器请求 Gemini，所以按钮填写的是 Vercel 部署后的链接）:
         - Env Name: `link`
         - Env Value：域名或 IP 地址，**必须以 http 开头**
         
@@ -80,7 +80,7 @@
 
 此项目使用到了以下项目：
 
-- [Light-Beacon/HomepageBuilder](https://github.com/Light-Beacon/HomepageBuilder) （本项目已对其进行部分更改，已使用相同的开源许可证 **AGPL-3.0 License**）
+- [Light-Beacon/HomepageBuilder](https://github.com/Light-Beacon/HomepageBuilder) （本项目已对其进行部分更改，已使用相同的开源许可证 **AGPL-3.0 License** ）
     - 本项目使用的更改后的同许可证源代码可在 [Ad-closeNN/HomepageBuilder](https://github.com/Ad-closeNN/HomepageBuilder) 查看
 
 - [Google Fonts - Material Symbols & Icons](https://fonts.google.com/icons)
@@ -92,4 +92,4 @@
 
 ---
 
-~~不管了能用就行~~ 如果有大佬们能改进的地方，欢迎 PR
+如果有大佬们能改进的地方，欢迎 PR
