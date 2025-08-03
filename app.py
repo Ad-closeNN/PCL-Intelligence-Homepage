@@ -162,14 +162,17 @@ def generate_response(query: str, searching: bool, uid: str):
     except Exception as e:
         print(str(e))
 
-    sys.argv = ['prog_name', 'build', '--output-path', f'/tmp/Homepage/{uid}/Custom_base.xaml']
+    sys.argv = ['prog_name', 'build', '--project', f'/tmp/Homepage/{uid}/Project.yml' ,'--output-path', f'/tmp/Homepage/{uid}/Custom_base.xaml']
     homepagebuilder.main.main()
     with open(f"/tmp/Homepage/{uid}/Custom_base.xaml", "r", encoding="utf-8") as raw:
         xaml = raw.readlines()
         with open(f"/tmp/Homepage/{uid}/Custom.xaml", "w", encoding="utf-8") as f:
             for line in xaml: # 不管了能用就行炸了再说 反正 Builder 输出的是规则的 别乱改了 :)
                 if line.startswith('<local:MyCard Title="'):
-                    f.write(f'<local:MyCard Title="{query}"'+' CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >')
+                    if searching:
+                        f.write(f'<local:MyCard Title="（已联网）{query}"'+' CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >')
+                    else:
+                        f.write(f'<local:MyCard Title="（未联网）{query}"'+' CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >')
                 else:
                     f.write(line)
     
