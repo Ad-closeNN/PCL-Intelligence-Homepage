@@ -162,14 +162,17 @@ def generate_response(query: str, searching: bool, uid: str):
     except Exception as e:
         print(str(e))
 
-    sys.argv = ['prog_name', 'build', '--output-path', f'/tmp/Homepage/{uid}/Custom_base.xaml']
+    sys.argv = ['prog_name', 'build', '--project', f'/tmp/Homepage/{uid}/Project.yml' ,'--output-path', f'/tmp/Homepage/{uid}/Custom_base.xaml']
     homepagebuilder.main.main()
     with open(f"/tmp/Homepage/{uid}/Custom_base.xaml", "r", encoding="utf-8") as raw:
         xaml = raw.readlines()
         with open(f"/tmp/Homepage/{uid}/Custom.xaml", "w", encoding="utf-8") as f:
             for line in xaml: # 不管了能用就行炸了再说 反正 Builder 输出的是规则的 别乱改了 :)
                 if line.startswith('<local:MyCard Title="'):
-                    f.write(f'<local:MyCard Title="{query}"'+' CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >')
+                    if searching:
+                        f.write(f'<local:MyCard Title="（已联网）{query}"'+' CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >')
+                    else:
+                        f.write(f'<local:MyCard Title="（未联网）{query}"'+' CanSwap="False" IsSwaped="False" Style="{StaticResource Card}" >')
                 else:
                     f.write(line)
     
@@ -199,7 +202,12 @@ def trigger():
     try:
         return generate_response(query=q, searching=search_flag, uid=uid)
     finally: # 删库(libraries)跑路 :)
-        shutil.rmtree(f"/tmp/Homepage/{uid}")
+        try:
+            shutil.rmtree(f"/tmp/Homepage/{uid}")
+            print(f"已删除请求文件夹 {uid}。")
+        except Exception as e:
+            e = str(e)
+            print(f"无法删除请求文件夹 {uid}：{e}。")
 
 @app.route("/Custom.json")
 def send():
@@ -218,4 +226,4 @@ def main():
 
 @app.route("/version")
 def pcl_version_check():
-    return "1.4.0"
+    return "1.4.1"
