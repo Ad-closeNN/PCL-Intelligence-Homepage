@@ -194,7 +194,7 @@ def trigger():
             return to homepage
             """
             content = f.read()
-            content = content.replace("https://pclintelligence.19991230.xyz", link.rstrip("/"))
+            content = content.replace("https://pclintelligence.adclosenn.top", link.rstrip("/"))
         return content
     search_flag = flask.request.args.get("search", "false").lower() == "true" # bool var
     install_and_import()
@@ -221,7 +221,7 @@ def send():
 def main():
     with open("/var/task/templates/index.html", "r", encoding="utf-8") as f:
         content = f.read()
-        content = content.replace("https://pclintelligence.19991230.xyz", link.rstrip("/"))
+        content = content.replace("https://pclintelligence.adclosenn.top", link.rstrip("/"))
     return content # v1.4.0 此时的 templates 失去了它本该被用作 Flask 渲染预设网页的价值（
 
 @app.route("/version")

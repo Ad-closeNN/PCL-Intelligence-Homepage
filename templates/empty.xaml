@@ -27,7 +27,7 @@ xmlns:local="clr-namespace:PCL;assembly=Plain Craft Launcher 2">
 <Paragraph>Bro 输入了 <Bold>空的内容</Bold>。
 </Paragraph>
 <Section Style="{StaticResource Hr}"/>
-<Paragraph Style="{StaticResource H3}">恭喜你发现了一个彩蛋</Paragraph><Paragraph>点击查看：<local:MyTextButton Margin="0,0,0,-2" EventType="打开网页" EventData="https://pclintelligence.19991230.xyz/easter-egg">https://pclintelligence.19991230.xyz/easter-egg</local:MyTextButton></Paragraph>
+<Paragraph Style="{StaticResource H3}">恭喜你发现了一个彩蛋</Paragraph><Paragraph>点击查看：<local:MyTextButton Margin="0,0,0,-2" EventType="打开网页" EventData="https://pclintelligence.adclosenn.top/easter-egg">https://pclintelligence.adclosenn.top/easter-egg</local:MyTextButton></Paragraph>
 </FlowDocument>
 </FlowDocumentScrollViewer>
 </StackPanel>
